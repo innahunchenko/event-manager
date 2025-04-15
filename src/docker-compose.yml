@@ -1,0 +1,9 @@
+services:
+  eventmanager.api:
+    image: ${DOCKER_REGISTRY-}eventmanagerapi
+    build:
+      context: .
+      dockerfile: EventManager.API/Dockerfile
+
+  databasesql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
