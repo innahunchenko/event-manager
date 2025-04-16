@@ -12,9 +12,9 @@ namespace EventManager.API.Database.Configurations
             builder.HasKey(k => k.Id);
             builder.HasIndex(ue => new { ue.UserId, ue.EventId }).IsUnique();
             builder.HasOne<UserEntity>()
-                .WithMany().HasForeignKey(ue => ue.UserId).OnDelete(DeleteBehavior.Restrict);
+                .WithMany(u => u.UserEvents).HasForeignKey(ue => ue.UserId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne<EventEntity>()
-                .WithMany().HasForeignKey(ue => ue.EventId).OnDelete(DeleteBehavior.Restrict);
+                .WithMany(e => e.UserEvents).HasForeignKey(ue => ue.EventId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

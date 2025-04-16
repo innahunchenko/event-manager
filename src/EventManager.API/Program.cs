@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 var app = builder.Build();
-await app.InitialiseDbAsync();
+await app.InitialiseDatabaseAsync();
 
 app.MapGet("/", () => "Hello World!");
 

@@ -1,8 +1,8 @@
 ﻿namespace EventManager.API.Database.Models
 {
-    public class UserEventEntity : DbEntity
+    public class UserEventEntity : DbBaseEntity
     {
-        public string UserId { get; set; } = default!;
-        public string EventId { get; set; } = default!;
+        public Guid UserId { get; set; } = default!;
+        public Guid EventId { get; set; } = default!;
     }
 }

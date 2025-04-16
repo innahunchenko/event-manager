@@ -4,6 +4,7 @@ using EventManager.API.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventManager.API.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415122605_AddIsSpeakerActivePropertyToEventEntity")]
+    partial class AddIsSpeakerActivePropertyToEventEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,8 +64,6 @@ namespace EventManager.API.Database.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SpeakerId");
-
-                    b.HasIndex("TopicId");
 
                     b.ToTable("Events", (string)null);
                 });
@@ -186,15 +187,15 @@ namespace EventManager.API.Database.Migrations
 
             modelBuilder.Entity("EventManager.API.Database.Models.EventEntity", b =>
                 {
-                    b.HasOne("EventManager.API.Database.Models.UserEntity", null)
+                    b.HasOne("EventManager.API.Database.Models.TopicEntity", null)
                         .WithMany()
                         .HasForeignKey("SpeakerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("EventManager.API.Database.Models.TopicEntity", null)
+                    b.HasOne("EventManager.API.Database.Models.UserEntity", null)
                         .WithMany()
-                        .HasForeignKey("TopicId")
+                        .HasForeignKey("SpeakerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -202,26 +203,16 @@ namespace EventManager.API.Database.Migrations
             modelBuilder.Entity("EventManager.API.Database.Models.UserEventEntity", b =>
                 {
                     b.HasOne("EventManager.API.Database.Models.EventEntity", null)
-                        .WithMany("UserEvents")
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EventManager.API.Database.Models.UserEntity", null)
-                        .WithMany("UserEvents")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("EventManager.API.Database.Models.EventEntity", b =>
-                {
-                    b.Navigation("UserEvents");
-                });
-
-            modelBuilder.Entity("EventManager.API.Database.Models.UserEntity", b =>
-                {
-                    b.Navigation("UserEvents");
                 });
 #pragma warning restore 612, 618
         }
