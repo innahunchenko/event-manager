@@ -6,7 +6,7 @@ namespace EventManager.API.Repositories
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : DbBaseEntity
     {
-        private readonly AppDbContext context;
+        protected readonly AppDbContext context;
 
         public BaseRepository(AppDbContext context)
         {
@@ -36,20 +36,25 @@ namespace EventManager.API.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
             context.Set<TEntity>().Update(entity);
             await context.SaveChangesAsync();
+
+            if (entity is IHasNavigationLoad navEntity)
+            {
+                await navEntity.LoadNavigationsAsync(context);
+                return entity;
+            }
+
+            var updated = await context.Set<TEntity>().FindAsync(entity.Id);
+            return updated ?? throw new InvalidOperationException($"Entity of type {typeof(TEntity).Name} with ID '{entity.Id}' not found after update.");
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(TEntity entity)
         {
-            var entity = await context.Set<TEntity>().FindAsync(id);
-            if (entity != null)
-            {
-                context.Set<TEntity>().Remove(entity);
-                await context.SaveChangesAsync();
-            }
+            context.Set<TEntity>().Remove(entity);
+            await context.SaveChangesAsync();
         }
     }
 }

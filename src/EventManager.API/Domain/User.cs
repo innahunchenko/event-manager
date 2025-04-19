@@ -2,7 +2,7 @@
 
 namespace EventManager.API.Domain
 {
-    public class User : DomainBaseEntity
+    public class User : IEntity
     {
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
@@ -15,16 +15,12 @@ namespace EventManager.API.Domain
         public IReadOnlyCollection<Guid>? EventIds => eventIds;
 
         public User Create(string firstName, 
-            string lastName, 
-            string position, 
-            string company, 
-            float yearsOfExperience, 
-            UserRole role,
-            IEnumerable<Guid> eventIds)
+                            string lastName, 
+                            string position, 
+                            string company, 
+                            float yearsOfExperience, 
+                            UserRole role)
         {
-            this.eventIds.Clear();
-            this.eventIds.AddRange(eventIds);
-
             return new User
             {
                 Id = Guid.NewGuid(),
@@ -35,6 +31,12 @@ namespace EventManager.API.Domain
                 YearsOfExperience = yearsOfExperience,
                 Role = role
             };
+        }
+
+        public void AddEvents(IEnumerable<Guid> ids)
+        {
+            eventIds.Clear();
+            eventIds.AddRange(ids);
         }
     }
 }

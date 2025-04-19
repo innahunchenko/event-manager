@@ -1,6 +1,6 @@
 ﻿namespace EventManager.API.Domain
 {
-    public class DomainBaseEntity
+    public class IEntity
     {
         public Guid Id { get; set; }
     }

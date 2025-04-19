@@ -5,7 +5,7 @@ namespace EventManager.API.Mapping
 {
     public static class DomainToDbEntityExtensions
     {
-        public static UserEntity ToEntity(this User user)
+        public static UserEntity ToDbEntity(this User user)
         {
             var entity = new UserEntity()
             {
@@ -39,26 +39,16 @@ namespace EventManager.API.Mapping
             };
         }
 
-        public static EventEntity ToEntity(this Event @event)
+        public static EventEntity ToDbEntity(this Event @event)
         {
-            var entity = new EventEntity()
+            return new EventEntity()
             {
                 Id = @event.Id,
-                Agenda = @event.Agenda,
                 DateTime = @event.DateTime,
                 IsSpeakerActive = @event.IsSpeakerActive,
                 SpeakerId = @event.Speaker.Id,
                 TopicId = @event.Topic.Id
             };
-
-            entity.UserEvents = @event.UserIds?
-                .Select(id => new UserEventEntity 
-                { 
-                    UserId = id, 
-                    EventId = @event.Id 
-                }).ToList() ?? new List<UserEventEntity>();
-
-            return entity;
         }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManager.API.Database
 {
-    public static class DbExtensions
+    public static class DbSeeding
     {
         public static async Task InitialiseDatabaseAsync(this WebApplication app)
         {
@@ -59,7 +59,6 @@ namespace EventManager.API.Database
                 SpeakerId = speaker.Id,
                 TopicId = topic.Id,
                 DateTime = DateTime.UtcNow.AddDays(3),
-                Agenda = "Introduction to Clean Architecture in .NET",
                 IsSpeakerActive = true
             };
 
@@ -110,7 +109,6 @@ namespace EventManager.API.Database
                 SpeakerId = speaker.Id,
                 TopicId = topic.Id,
                 DateTime = DateTime.UtcNow.AddDays(7),
-                Agenda = "Leveraging OpenAI with .NET 8",
                 IsSpeakerActive = true
             };
 

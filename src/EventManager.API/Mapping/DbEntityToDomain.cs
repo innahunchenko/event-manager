@@ -5,45 +5,39 @@ namespace EventManager.API.Mapping
 {
     public static class DbEntityToDomainExtensions
     {
-        public static User ToDomain(this UserEntity userEntity)
+        public static User ToUser(this UserEntity userEntity)
         {
-            var eventIds = userEntity.UserEvents?
-                .Select(x => x.EventId) ?? Enumerable.Empty<Guid>();
-
             var user = new User().Create(
                 userEntity.FirstName,
                 userEntity.LastName,
                 userEntity.Position,
                 userEntity.Company,
                 userEntity.YearsOfExperience,
-                userEntity.Role,
-                eventIds);
+                userEntity.Role);
+
+            var eventIds = userEntity.UserEvents?
+                .Select(x => x.EventId) ?? Enumerable.Empty<Guid>();
+
+            if (eventIds.Any())
+                user.AddEvents(eventIds);
 
             return user;
         }
 
-        public static Topic ToDomain(this TopicEntity topicEntity)
+        public static Topic ToTopic(this TopicEntity topicEntity)
         {
-            var topic = Topic.Create(
+            return Topic.Create(
                 topicEntity.Name,
                 topicEntity.Description,
                 topicEntity.IsActive);
-
-            return topic;
         }
 
-        public static Event ToDomain(this EventEntity eventEntity)
+        public static Event ToEvent(this EventEntity eventEntity)
         {
-            var userIds = eventEntity.UserEvents?
-                .Select(e => e.UserId) ?? Enumerable.Empty<Guid>();
-
-            var @event = Event.Create(
+            return Event.Create(
                 eventEntity.DateTime,
-                eventEntity.Agenda,
-                userIds,
-                eventEntity.IsSpeakerActive);
-
-            return @event;
+                eventEntity.Topic?.ToTopic() ?? new Topic { Id = eventEntity.TopicId },
+                eventEntity.Speaker?.ToUser() ?? new User { Id = eventEntity.SpeakerId });
         }
     }
 }
