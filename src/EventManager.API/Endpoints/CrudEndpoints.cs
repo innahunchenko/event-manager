@@ -11,7 +11,7 @@ namespace EventManager.API.Endpoints
             string baseRoute,
             Func<TRequest, TDomain> mapToDomain,
             Func<TDomain, TResponse> mapToResponse,
-            Func<TService, string, Task<TDomain?>> getByIdAsync,
+            Func<TService, string, Task<TDomain>> getByIdAsync,
             Func<TService, Task<IEnumerable<TDomain>>> getAllAsync,
             Func<TService, TDomain, Task<TDomain>> createAsync,
             Func<TService, TDomain, Task<TDomain>> updateAsync,

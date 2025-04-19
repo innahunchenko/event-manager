@@ -1,4 +1,5 @@
-﻿using EventManager.API.Domain;
+﻿using EventManager.API.Database.Models;
+using EventManager.API.Domain;
 using EventManager.API.Mapping;
 using EventManager.API.Repositories;
 
@@ -7,6 +8,11 @@ namespace EventManager.API.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository repository;
+
+        public UserService(IUserRepository repository)
+        {
+            this.repository = repository;
+        }
 
         public async Task<User> GetByIdAsync(string id)
         {
