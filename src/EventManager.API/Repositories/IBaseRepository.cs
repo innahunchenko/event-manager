@@ -10,6 +10,5 @@ namespace EventManager.API.Repositories
         Task CreateRangeAsync(IList<TEntity> entities);
         Task<TEntity> UpdateAsync(TEntity entity, params Expression<Func<TEntity, object>>[] includes);
         Task DeleteAsync(TEntity entity);
-        Task SaveAsync();
     }
 }

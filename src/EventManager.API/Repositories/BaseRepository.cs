@@ -86,10 +86,5 @@ namespace EventManager.API.Repositories
             context.Set<TEntity>().Remove(entity);
             await context.SaveChangesAsync();
         }
-
-        public async Task SaveAsync()
-        {
-            await context.SaveChangesAsync();
-        }
     }
 }
