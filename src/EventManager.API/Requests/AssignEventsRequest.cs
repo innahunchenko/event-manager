@@ -2,7 +2,7 @@
 {
     public class AssignEventsRequest : IRequest
     {
-        public string Id { get; set; } = "";
+        public string Id { get; set; } = string.Empty;
         public IEnumerable<string> EventIds { get; set; } = new List<string>();
     }
 }

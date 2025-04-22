@@ -14,26 +14,7 @@ namespace EventManager.API.Domain
         private readonly List<Guid> eventIds = new();
         public IReadOnlyCollection<Guid>? EventIds => eventIds;
 
-        public User Create(string firstName, 
-                            string lastName, 
-                            string position, 
-                            string company, 
-                            float yearsOfExperience, 
-                            UserRole role)
-        {
-            return new User
-            {
-                Id = Guid.NewGuid(),
-                FirstName = firstName,
-                LastName = lastName,
-                Position = position,
-                Company = company,
-                YearsOfExperience = yearsOfExperience,
-                Role = role
-            };
-        }
-
-        public void AddEvents(IEnumerable<Guid> ids)
+        public void AddEventIds(IEnumerable<Guid> ids)
         {
             eventIds.Clear();
             eventIds.AddRange(ids);

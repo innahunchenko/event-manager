@@ -2,12 +2,12 @@
 {
     public class UserRequest : IRequest
     {
-        public string Id { get; set; } = "";
-        public string FirstName { get; set; } = "";
-        public string LastName { get; set; } = "";
-        public string Position { get; set; } = "";
-        public string Company { get; set; } = "";
+        public string Id { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Position { get; set; } = string.Empty;
+        public string Company { get; set; } = string.Empty;
         public float YearsOfExperience { get; set; }
-        public string Role { get; set; } = "";
+        public string Role { get; set; } = string.Empty;
     }
 }

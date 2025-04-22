@@ -5,35 +5,76 @@ namespace EventManager.API.Mapping
 {
     public static class DomainToResponse
     {
-        public static UserResponse ToResponse(this User user)
+        public static void ToResponse(this User domain, UserResponse response)
         {
-            return new UserResponse(
-                user.FirstName,
-                user.LastName,
-                user.Position,
-                user.Company,
-                user.YearsOfExperience,
-                user.Role.ToString());
+            response.Id = domain.Id.ToString();
+            response.FirstName = domain.FirstName;
+            response.LastName = domain.LastName;
+            response.Position = domain.Position;
+            response.Company = domain.Company;
+            response.YearsOfExperience = domain.YearsOfExperience;
+            response.Role = domain.Role.ToString();
         }
 
-        public static TopicResponse ToResponse(this Topic topic)
+        public static void ToResponse(this Topic domain, TopicResponse response)
         {
-            return new TopicResponse(
-                topic.Description,
-                topic.Name);
+            response.Id = domain.Id.ToString();
+            response.IsActive = domain.IsActive;
+            response.Name = domain.Name;
+            response.Description = domain.Description;
         }
 
-        public static EventResponse ToResponse(this Event @event)
+        public static void ToResponse(this Event domain, EventResponse response)
         {
-            return new EventResponse
-            (
-                @event.Speaker.FirstName,
-                @event.Speaker.LastName,
-                @event.Speaker.Position,
-                @event.Speaker.Company,
-                @event.Topic.Name,
-                @event.DateTime
-            );
+            response.Id = domain.Id.ToString();
+            response.SpeakerFirstName = domain.Speaker.FirstName;
+            response.SpeakerLastName = domain.Speaker.LastName;
+            response.SpeakerPosition = domain.Speaker.Position;
+            response.SpeakerCompany = domain.Speaker.Company;
+            response.IsSpeakerActive = domain.IsSpeakerActive;
+            response.TopicName = domain.Topic.Name;
+            response.DateTime = domain.DateTime;
+        }
+
+        //public static List<TResponse> ToResponses<TDomain, TResponse>(
+        //    this IEnumerable<TDomain> domains, Action<TDomain, TResponse> map) where TResponse : new()
+        //{
+        //    return domains.Select(d =>
+        //    {
+        //        var response = new TResponse();
+        //        map(d, response);
+        //        return response;
+        //    }).ToList();
+        //}
+
+        public static List<TopicResponse> ToResponses(this IEnumerable<Topic> topics)
+        {
+            return topics.Select(t =>
+            {
+                var response = new TopicResponse();
+                t.ToResponse(response);
+                return response;
+            }).ToList();
+        }
+
+        public static List<UserResponse> ToResponses(this IEnumerable<User> users)
+        {
+            return users.Select(d =>
+            {
+                var response = new UserResponse();
+                d.ToResponse(response);
+                return response;
+            }).ToList();
+        }
+
+        public static List<EventResponse> ToResponses(this IEnumerable<Event> events)
+        {
+            return events.Select(d =>
+            {
+                var response = new EventResponse();
+                d.ToResponse(response);
+                return response;
+            }).ToList();
         }
     }
 }

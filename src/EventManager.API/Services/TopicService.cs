@@ -16,44 +16,48 @@ namespace EventManager.API.Services
 
         public async Task<Topic> CreateAsync(Topic topic)
         {
-            var dbEntity = topic.ToEntity();
-            dbEntity = await repository.CreateAsync(dbEntity);
-            topic = dbEntity.ToTopic();
+            var entity = new TopicEntity();
+            topic.ToEntity(entity);
+            entity = await repository.CreateAsync(entity);
+            entity.ToDomain(topic);
             return topic;
         }
 
         public async Task CreateRangeAsync(IEnumerable<Topic> topics)
         {
-            var entities = topics.Select(u => u.ToEntity()).ToList();
+            var entities = topics.ToEntities();
             await repository.CreateRangeAsync(entities);
         }
 
         public async Task DeleteAsync(Topic topic)
         {
-            var entity = topic.ToEntity();
+            var entity = new TopicEntity();
+            topic.ToEntity(entity);
             await repository.DeleteAsync(entity);
         }
 
         public async Task<IEnumerable<Topic>> GetAllAsync()
         {
             var entities = await repository.GetAllAsync();
-            var events = entities.Select(u => u.ToTopic()).ToList();
-            return events;
+            var topics = entities.ToDomains();
+            return topics;
         }
 
         public async Task<Topic> GetByIdAsync(string id)
         {
             var entity = await repository.GetByIdAsync(Guid.Parse(id));
-            var topic = entity.ToTopic();
+            var topic = new Topic();
+            entity.ToDomain(topic);
             return topic;
         }
 
         public async Task<Topic> UpdateAsync(Topic topic)
         {
-            var entity = topic.ToEntity();
+            var entity = await repository.GetByIdAsync(topic.Id);
+            topic.ToEntity(entity);
             entity = await repository.UpdateAsync(entity);
-            var updatedTopic = entity.ToTopic();
-            return updatedTopic;
+            entity.ToDomain(topic);
+            return topic;
         }
     }
 }

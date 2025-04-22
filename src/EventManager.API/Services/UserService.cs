@@ -16,43 +16,55 @@ namespace EventManager.API.Services
 
         public async Task<User> GetByIdAsync(string id)
         {
-            var userEntity = await repository.GetByIdAsync(Guid.Parse(id));
-            var user = userEntity.ToUser();
+            var userEntity = await repository.GetByIdAsync(Guid.Parse(id), u => u.UserEvents);
+            var user = new User();
+            userEntity.ToDomain(user);
             return user;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            var userEntities = await repository.GetAllAsync();
-            var users = userEntities.Select(u => u.ToUser()).ToList();
+            var entities = await repository.GetAllAsync();
+            var users = entities.ToDomains();
             return users;
+        }
+
+        public async Task<List<Event>> GetUserEventsAsync(string userId)
+        {
+            var user = await GetByIdAsync(userId);
+             var entities = await repository.GetUserEventsAsync(user.EventIds.ToList());
+            var events = entities.ToDomains();
+            return events;
         }
 
         public async Task<User> CreateAsync(User user)
         {
-            var userEntity = user.ToDbEntity();
-            userEntity = await repository.CreateAsync(userEntity);
-            user = userEntity.ToUser();
+            var entity = new UserEntity();
+            user.ToEntity(entity);
+            entity = await repository.CreateAsync(entity);
+            entity.ToDomain(user);
             return user;
         }
 
         public async Task CreateRangeAsync(IEnumerable<User> users)
         {
-            var entities = users.Select(u => u.ToDbEntity()).ToList();
+            var entities = users.ToEntities();
             await repository.CreateRangeAsync(entities);
         }
 
         public async Task<User> UpdateAsync(User user)
         {
-            var entity = user.ToDbEntity();
+            var entity = await repository.GetByIdAsync(user.Id);
+            user.ToEntity(entity);
             entity = await repository.UpdateAsync(entity);
-            user = entity.ToUser();
+            entity.ToDomain(user);
             return user;
         }
 
         public async Task DeleteAsync(User user)
         {
-            var entity = user.ToDbEntity();
+            var entity = new UserEntity();
+            user.ToEntity(entity);
             await repository.DeleteAsync(entity);
         }
 
@@ -62,9 +74,10 @@ namespace EventManager.API.Services
 
             eventIds.ToList().ForEach(eventId =>  evIds.Add(Guid.Parse(eventId)));
             var user = await GetByIdAsync(userId);
-            user.AddEvents(evIds);
+            user.AddEventIds(evIds);
 
-            var entity = user.ToDbEntity();
+            var entity = new UserEntity();
+            user.ToEntity(entity);
             await repository.AssignEventsToUserAsync(entity);
         }
     }

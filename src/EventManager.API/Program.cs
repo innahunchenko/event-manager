@@ -1,5 +1,4 @@
 using EventManager.API.Database;
-using EventManager.API.Endpoints;
 using EventManager.API.Repositories;
 using EventManager.API.Services;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +14,10 @@ builder.Services.AddScoped<TopicService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services
+    .AddControllers()
+    .AddNewtonsoftJson(); 
+
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -24,8 +27,6 @@ await app.InitialiseDatabaseAsync();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapEventEndpoints();
-app.MapUserEndpoints();
-app.MapTopicEndpoints();
+app.MapControllers(); 
 
 app.Run();

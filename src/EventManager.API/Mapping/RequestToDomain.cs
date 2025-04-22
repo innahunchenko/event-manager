@@ -6,31 +6,31 @@ namespace EventManager.API.Mapping
 {
     public static class RequestToDomain
     {
-        public static User ToUser(this UserRequest request)
+        public static void ToDomain(this UserRequest request, User domain)
         {
             var userRole = Enum.TryParse<UserRole>(request.Role, ignoreCase: true, out var role);
-            
-            var user = new User().Create(
-                request.FirstName,
-                request.LastName,
-                request.Position,
-                request.Company,
-                request.YearsOfExperience,
-                role);
-
-            return user;
+            domain.Id = Guid.Parse(request.Id);
+            domain.FirstName = request.FirstName;
+            domain.LastName = request.LastName;
+            domain.Position = request.Position;
+            domain.Company = request.Company;
+            domain.YearsOfExperience = request.YearsOfExperience;
+            domain.Role = role;
         }
 
-        public static Topic ToTopic(this TopicRequest request)
+        public static void ToDomain(this TopicRequest request, Topic domain)
         {
-            return Topic.Create(request.Name, request.Description);
+            domain.Id = Guid.Parse(request.Id);
+            domain.Name = request.Name;
+            domain.Description = request.Description;
         }
 
-        public static Event ToEvent(this EventRequest request)
+        public static void ToDomain(this EventRequest request, Event domain)
         {
-            return Event.Create(request.DateTime, 
-                new Topic { Id = Guid.Parse(request.TopicId) }, 
-                new User { Id = Guid.Parse(request.SpeakerId) });
+            domain.Id = Guid.Parse(request.Id);
+            domain.SpeakerId = Guid.Parse(request.SpeakerId);
+            domain.TopicId = Guid.Parse(request.TopicId);
+            domain.DateTime = request.DateTime;
         }
     }
 }

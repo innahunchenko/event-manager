@@ -1,10 +1,14 @@
 ﻿namespace EventManager.API.Responses
 {
-    public record EventResponse(
-        string SpeakerFirstName,
-        string SpeakerLastName,
-        string SpeakerPosition,
-        string SpeakerCompany,
-        string TopicName,
-        DateTime DateTime);
+    public class EventResponse
+    {
+        public string Id { get; set; } = string.Empty;
+        public string SpeakerFirstName { get; set; } = string.Empty;
+        public string SpeakerLastName { get; set; } = string.Empty;
+        public string SpeakerPosition { get; set; } = string.Empty;
+        public string SpeakerCompany { get; set; } = string.Empty;
+        public bool IsSpeakerActive { get; set; }
+        public string TopicName { get; set; } = string.Empty;
+        public DateTime DateTime { get; set; }
+    }
 }
