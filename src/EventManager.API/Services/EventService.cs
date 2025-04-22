@@ -58,10 +58,7 @@ namespace EventManager.API.Services
 
         public async Task<Event> UpdateAsync(Event @event)
         {
-            var entity = await repository.GetByIdAsync(@event.Id,
-                e => e.Topic,
-                e => e.Speaker);
-
+            var entity = await repository.GetByIdAsync(@event.Id);
             @event.ToEntity(entity);
             entity = await repository.UpdateAsync(entity);
             entity.ToDomain(@event);

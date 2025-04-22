@@ -14,13 +14,6 @@ namespace EventManager.API.Mapping
             entity.Position = domain.Position;
             entity.Role = domain.Role;
             entity.YearsOfExperience = domain.YearsOfExperience;
-
-            entity.UserEvents = domain.EventIds?
-                .Select(id => new UserEventEntity
-                {
-                    UserId = domain.Id,
-                    EventId = id,
-                }).ToList() ?? new List<UserEventEntity>();
         }
 
         public static void ToEntity(this Topic domain, TopicEntity entity)

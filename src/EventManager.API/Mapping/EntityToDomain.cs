@@ -37,8 +37,12 @@ namespace EventManager.API.Mapping
             domain.TopicId = entity.TopicId;
             domain.SpeakerId = entity.SpeakerId;
             domain.IsSpeakerActive = entity.IsSpeakerActive;
-            entity.Speaker.ToDomain(domain.Speaker);
-            entity.Topic.ToDomain(domain.Topic);
+
+            if (entity.Speaker != null)
+                entity.Speaker.ToDomain(domain.Speaker);
+
+            if (entity.Topic != null)
+                entity.Topic.ToDomain(domain.Topic);
         }
 
         public static List<User> ToDomains(this IEnumerable<UserEntity> entities)

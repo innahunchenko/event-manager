@@ -1,5 +1,4 @@
 ﻿using EventManager.API.Database.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using System.Linq.Expressions;
 namespace EventManager.API.Repositories
 {
@@ -10,7 +9,6 @@ namespace EventManager.API.Repositories
         Task<TEntity> CreateAsync(TEntity entity);
         Task CreateRangeAsync(IList<TEntity> entities);
         Task<TEntity> UpdateAsync(TEntity entity, params Expression<Func<TEntity, object>>[] includes);
-       // Task<TEntity> UpdateAsync(Guid id, JsonPatchDocument<TEntity> patchEntity);
         Task DeleteAsync(TEntity entity);
         Task SaveAsync();
     }
