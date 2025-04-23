@@ -39,14 +39,14 @@ namespace EventManager.API.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<TEntity> CreateAsync(TEntity entity)
+        public async Task<Guid> CreateAsync(TEntity entity)
         {
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
 
             await context.Set<TEntity>().AddAsync(entity);
             await context.SaveChangesAsync();
-            return entity;
+            return entity.Id;
         }
 
         public async Task CreateRangeAsync(IList<TEntity> entities)

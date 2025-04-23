@@ -6,10 +6,9 @@ namespace EventManager.API.Mapping
 {
     public static class RequestToDomain
     {
-        public static void ToDomain(this UserRequest request, User domain)
+        public static void From(this User domain, UserRequest request)
         {
             var userRole = Enum.TryParse<UserRole>(request.Role, ignoreCase: true, out var role);
-            domain.Id = Guid.Parse(request.Id);
             domain.FirstName = request.FirstName;
             domain.LastName = request.LastName;
             domain.Position = request.Position;
@@ -20,14 +19,12 @@ namespace EventManager.API.Mapping
 
         public static void ToDomain(this TopicRequest request, Topic domain)
         {
-            domain.Id = Guid.Parse(request.Id);
             domain.Name = request.Name;
             domain.Description = request.Description;
         }
 
-        public static void ToDomain(this EventRequest request, Event domain)
+        public static void From(this Event domain, EventRequest request)
         {
-            domain.Id = Guid.Parse(request.Id);
             domain.SpeakerId = Guid.Parse(request.SpeakerId);
             domain.TopicId = Guid.Parse(request.TopicId);
             domain.DateTime = request.DateTime;

@@ -19,17 +19,12 @@ namespace EventManager.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<EventResponse>> Create([FromBody] EventRequest request)
+        public async Task<ActionResult<string>> Create([FromBody] EventRequest request)
         {
             var domain = new Event();
-            request.ToDomain(domain);
-
-            var created = await service.CreateAsync(domain);
-
-            var response = new EventResponse();
-            created.ToResponse(response);
-
-            return Ok(response);
+            domain.From(request);
+            var id = await service.CreateAsync(domain);
+            return Ok(id);
         }
 
         [HttpGet]
@@ -53,16 +48,16 @@ namespace EventManager.API.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var domain = await service.GetByIdAsync(id);
-            if (domain is null)
-                return NotFound();
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    var domain = await service.GetByIdAsync(id);
+        //    if (domain is null)
+        //        return NotFound();
 
-            await service.DeleteAsync(domain);
-            return NoContent();
-        }
+        //    await service.DeleteAsync(domain);
+        //    return NoContent();
+        //}
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<EventRequest> patchDoc)
@@ -75,7 +70,7 @@ namespace EventManager.API.Controllers
 
             patchDoc.ApplyTo(request);
 
-            request.ToDomain(domain);
+            domain.From(request);
 
             var updated = await service.UpdateAsync(domain);
             var response = new EventResponse();

@@ -19,17 +19,12 @@ namespace EventManager.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<UserResponse>> Create([FromBody] UserRequest request)
+        public async Task<ActionResult<string>> Create([FromBody] UserRequest request)
         {
             var domain = new User();
-            request.ToDomain(domain);
-
-            var created = await service.CreateAsync(domain);
-
-            var response = new UserResponse();
-            created.ToResponse(response);
-
-            return Ok(response);
+            domain.From(request);
+            var id = await service.CreateAsync(domain);
+            return Ok(id);
         }
 
         [HttpGet]
@@ -53,16 +48,16 @@ namespace EventManager.API.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var domain = await service.GetByIdAsync(id);
-            if (domain is null)
-                return NotFound();
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    var domain = await service.GetByIdAsync(id);
+        //    if (domain is null)
+        //        return NotFound();
 
-            await service.DeleteAsync(domain);
-            return NoContent();
-        }
+        //    await service.DeleteAsync(domain);
+        //    return NoContent();
+        //}
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<UserRequest> patchDoc)
@@ -74,7 +69,7 @@ namespace EventManager.API.Controllers
             domain.ToRequest(request);
 
             patchDoc.ApplyTo(request);
-            request.ToDomain(domain);
+            domain.From(request);
 
             var updated = await service.UpdateAsync(domain);
             var response = new UserResponse();
@@ -83,18 +78,18 @@ namespace EventManager.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("{baseRoute}/assign-events")]
-        public async Task<IActionResult> AssignEvents([FromBody] AssignEventsRequest request)
+        [HttpPost("assign-events/{id}")]
+        public async Task<IActionResult> AssignEvents(string id, [FromBody] AssignEventsRequest request)
         {
-            var existing = await service.GetByIdAsync(request.Id);
+            var existing = await service.GetByIdAsync(id);
             if (existing is null)
                 return NotFound();
 
-            await service.AssignEventsToUserAsync(request.Id, request.EventIds);
+            await service.AssignEventsToUserAsync(id, request.EventIds);
             return NoContent();
         }
 
-        [HttpGet("{baseRoute}/events/{id}")]
+        [HttpGet("events/{id}")]
         public async Task<IActionResult> GetUserEvents(string id)
         {
             var existing = await service.GetByIdAsync(id);

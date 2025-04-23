@@ -14,13 +14,12 @@ namespace EventManager.API.Services
             this.repository = repository;
         }
 
-        public async Task<Topic> CreateAsync(Topic topic)
+        public async Task<Guid> CreateAsync(Topic topic)
         {
             var entity = new TopicEntity();
             topic.ToEntity(entity);
-            entity = await repository.CreateAsync(entity);
-            entity.ToDomain(topic);
-            return topic;
+            var id = await repository.CreateAsync(entity);
+            return id;
         }
 
         public async Task CreateRangeAsync(IEnumerable<Topic> topics)

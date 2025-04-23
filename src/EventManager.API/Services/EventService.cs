@@ -14,13 +14,12 @@ namespace EventManager.API.Services
             this.repository = repository;
         }
 
-        public async Task<Event> CreateAsync(Event @event)
+        public async Task<Guid> CreateAsync(Event @event)
         {
             var entity = new EventEntity();
             @event.ToEntity(entity);
-            entity = await repository.CreateAsync(entity);
-            entity.ToDomain(@event);
-            return @event;
+            var id = await repository.CreateAsync(entity);
+            return id;
         }
 
         public async Task CreateRangeAsync(IEnumerable<Event> events)
@@ -60,7 +59,7 @@ namespace EventManager.API.Services
         {
             var entity = await repository.GetByIdAsync(@event.Id);
             @event.ToEntity(entity);
-            entity = await repository.UpdateAsync(entity);
+            entity = await repository.UpdateAsync(entity, e => e.Speaker, e => e.Topic);
             entity.ToDomain(@event);
             
             return @event;

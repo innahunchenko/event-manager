@@ -19,17 +19,12 @@ namespace EventManager.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<TopicResponse>> Create([FromBody] TopicRequest request)
+        public async Task<ActionResult<string>> Create([FromBody] TopicRequest request)
         {
             var domain = new Topic();
             request.ToDomain(domain);
-
-            var created = await service.CreateAsync(domain);
-
-            var response = new TopicResponse();
-            created.ToResponse(response);
-
-            return Ok(response);
+            var id = await service.CreateAsync(domain);
+            return Ok(id);
         }
 
         [HttpGet]

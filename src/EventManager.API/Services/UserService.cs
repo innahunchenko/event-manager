@@ -37,13 +37,12 @@ namespace EventManager.API.Services
             return events;
         }
 
-        public async Task<User> CreateAsync(User user)
+        public async Task<Guid> CreateAsync(User user)
         {
             var entity = new UserEntity();
             user.ToEntity(entity);
-            entity = await repository.CreateAsync(entity);
-            entity.ToDomain(user);
-            return user;
+            var id = await repository.CreateAsync(entity);
+            return id;
         }
 
         public async Task CreateRangeAsync(IEnumerable<User> users)
@@ -63,21 +62,20 @@ namespace EventManager.API.Services
 
         public async Task DeleteAsync(User user)
         {
-            var entity = new UserEntity();
+            var entity = await repository.GetByIdAsync(user.Id);
             user.ToEntity(entity);
             await repository.DeleteAsync(entity);
         }
 
         public async Task AssignEventsToUserAsync(string userId, IEnumerable<string> eventIds)
         {
+            var entity = await repository.GetByIdAsync(Guid.Parse(userId));
             var evIds = new List<Guid>();
-
             eventIds.ToList().ForEach(eventId =>  evIds.Add(Guid.Parse(eventId)));
             var user = await GetByIdAsync(userId);
             user.AddEventIds(evIds);
-
-            var entity = new UserEntity();
             user.ToEntity(entity);
+            user.MapUserEvents(entity);
             await repository.AssignEventsToUserAsync(entity);
         }
     }

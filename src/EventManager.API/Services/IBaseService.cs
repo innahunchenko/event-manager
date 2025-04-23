@@ -6,7 +6,7 @@ namespace EventManager.API.Services
     {
         Task<TEntity> GetByIdAsync(string id);
         Task<IEnumerable<TEntity>> GetAllAsync();
-        Task<TEntity> CreateAsync(TEntity entity);
+        Task<Guid> CreateAsync(TEntity entity);
         Task CreateRangeAsync(IEnumerable<TEntity> entity);
         Task<TEntity> UpdateAsync(TEntity entity);
         Task DeleteAsync(TEntity entity);

@@ -7,7 +7,6 @@ namespace EventManager.API.Mapping
     {
         public static void ToRequest(this Event domain, EventRequest request)
         {
-            request.Id = domain.Id.ToString();
             request.DateTime = domain.DateTime;
             request.SpeakerId = domain.SpeakerId.ToString();
             request.TopicId = domain.TopicId.ToString();
@@ -15,14 +14,12 @@ namespace EventManager.API.Mapping
 
         public static void ToRequest(this Topic domain, TopicRequest request)
         {
-            request.Id = domain.Id.ToString();
             request.Description = domain.Description;
             request.Name = domain.Name;
         }
 
         public static void ToRequest(this User domain, UserRequest request)
         {
-            request.Id = domain.Id.ToString();
             request.FirstName = domain.FirstName;
             request.LastName = domain.LastName;
             request.Company = domain.Company;

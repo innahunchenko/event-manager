@@ -16,6 +16,20 @@ namespace EventManager.API.Mapping
             entity.YearsOfExperience = domain.YearsOfExperience;
         }
 
+        public static void MapUserEvents(this User domain, UserEntity entity)
+        {
+            entity.UserEvents.Clear();
+
+            foreach (var eventId in domain.EventIds ?? Enumerable.Empty<Guid>())
+            {
+                entity.UserEvents.Add(new UserEventEntity
+                {
+                    UserId = domain.Id,
+                    EventId = eventId
+                });
+            }
+        }
+
         public static void ToEntity(this Topic domain, TopicEntity entity)
         {
             entity.Id = domain.Id;
