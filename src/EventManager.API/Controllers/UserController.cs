@@ -48,16 +48,16 @@ namespace EventManager.API.Controllers
             return Ok(response);
         }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    var domain = await service.GetByIdAsync(id);
-        //    if (domain is null)
-        //        return NotFound();
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var domain = await service.GetByIdAsync(id);
+            if (domain is null)
+                return NotFound();
 
-        //    await service.DeleteAsync(domain);
-        //    return NoContent();
-        //}
+            await service.DeleteAsync(domain);
+            return NoContent();
+        }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<UserRequest> patchDoc)

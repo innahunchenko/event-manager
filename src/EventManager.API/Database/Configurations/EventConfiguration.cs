@@ -13,15 +13,21 @@ namespace EventManager.API.Database.Configurations
             builder.Property(p => p.IsSpeakerActive).HasDefaultValue(true);
             builder.Property(p => p.DateTime).IsRequired();
 
+            builder.Property(e => e.SpeakerId)
+               .IsRequired(false); 
+
+            builder.Property(e => e.TopicId)
+               .IsRequired(false);
+
             builder.HasOne(e => e.Speaker)
                .WithMany()
                .HasForeignKey(e => e.SpeakerId)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(e => e.Topic)
                .WithMany()
                .HasForeignKey(e => e.TopicId)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.SetNull);
 
             //builder.HasOne<UserEntity>()
             //    .WithMany().HasForeignKey(k => k.SpeakerId).OnDelete(DeleteBehavior.Restrict);
