@@ -43,7 +43,7 @@ namespace EventManager.API.Controllers
                 return NotFound();
 
             var response = new EventResponse();
-            domain.ToResponse(response);
+            response.From(domain);
 
             return Ok(response);
         }
@@ -66,29 +66,13 @@ namespace EventManager.API.Controllers
             if (domain == null) return NotFound();
 
             var request = new EventRequest();
-            domain.ToRequest(request);
-
+            request.From(domain);
             patchDoc.ApplyTo(request);
-
             domain.From(request);
-
             var updated = await service.UpdateAsync(domain);
             var response = new EventResponse();
-            updated.ToResponse(response);
-
+            response.From(updated);
             return Ok(response);
         }
-
-        //app.MapPatch("/api/events/{id:guid}/deactivate-speaker", async (Guid id, EventService service) =>
-        //{
-        //    var existing = await service.GetByIdAsync(id);
-        //    if (existing is null)
-        //        return Results.NotFound();
-
-        //    existing.DeactivateSpeaker();
-        //    await service.UpdateAsync(existing);
-
-        //    return Results.NoContent();
-        //});
     }
 }

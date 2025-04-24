@@ -3,7 +3,6 @@
     public class Event : IEntity
     {
         public DateTime DateTime { get; set; }
-        public bool IsSpeakerActive { get; set; }
         public Guid? TopicId { get; set; }
         public Guid? SpeakerId { get; set; }
         public Topic? Topic { get; set; } = new();

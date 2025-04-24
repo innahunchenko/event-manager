@@ -5,7 +5,7 @@ namespace EventManager.API.Mapping
 {
     public static class DbEntityToDomainExtensions
     {
-        public static void ToDomain(this UserEntity entity, User domain)
+        public static void From(this User domain, UserEntity entity)
         {
             domain.Id = entity.Id;
             domain.FirstName = entity.FirstName;
@@ -22,7 +22,7 @@ namespace EventManager.API.Mapping
                 domain.AddEventIds(eventIds);
         }
 
-        public static void ToDomain(this TopicEntity entity, Topic domain)
+        public static void From(this Topic domain, TopicEntity entity)
         {
             domain.Id = entity.Id;
             domain.Name = entity.Name;
@@ -30,19 +30,18 @@ namespace EventManager.API.Mapping
             domain.IsActive = entity.IsActive;
         }
 
-        public static void ToDomain(this EventEntity entity, Event domain)
+        public static void From(this Event domain, EventEntity entity)
         {
             domain.Id = entity.Id;
             domain.DateTime = entity.DateTime;
             domain.TopicId = entity.TopicId;
             domain.SpeakerId = entity.SpeakerId;
-            domain.IsSpeakerActive = entity.IsSpeakerActive;
 
             if (entity.Speaker != null)
-                entity.Speaker.ToDomain(domain.Speaker);
+                domain.Speaker.From(entity.Speaker);
 
             if (entity.Topic != null)
-                entity.Topic.ToDomain(domain.Topic);
+                domain.Topic.From(entity.Topic);
         }
 
         public static List<User> ToDomains(this IEnumerable<UserEntity> entities)
@@ -50,7 +49,7 @@ namespace EventManager.API.Mapping
             return entities.Select(entity =>
             {
                 var domain = new User();
-                entity.ToDomain(domain);
+                domain.From(entity);
                 return domain;
             }).ToList();
         }
@@ -60,7 +59,7 @@ namespace EventManager.API.Mapping
             return entities.Select(entity =>
             {
                 var domain = new Topic();
-                entity.ToDomain(domain);
+                domain.From(entity);
                 return domain;
             }).ToList();
         }
@@ -70,7 +69,7 @@ namespace EventManager.API.Mapping
             return entities.Select(entity =>
             {
                 var domain = new Event();
-                entity.ToDomain(domain);
+                domain.From(entity);
                 return domain;
             }).ToList();
         }

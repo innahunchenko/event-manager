@@ -43,8 +43,7 @@ namespace EventManager.API.Controllers
                 return NotFound();
 
             var response = new UserResponse();
-            domain.ToResponse(response);
-
+            response.From(domain);
             return Ok(response);
         }
 
@@ -66,15 +65,12 @@ namespace EventManager.API.Controllers
             if (domain == null) return NotFound();
 
             var request = new UserRequest();
-            domain.ToRequest(request);
-
+            request.From(domain);
             patchDoc.ApplyTo(request);
             domain.From(request);
-
             var updated = await service.UpdateAsync(domain);
             var response = new UserResponse();
-            updated.ToResponse(response);
-
+            response.From(updated);
             return Ok(response);
         }
 

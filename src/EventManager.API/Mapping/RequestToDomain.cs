@@ -17,7 +17,7 @@ namespace EventManager.API.Mapping
             domain.Role = role;
         }
 
-        public static void ToDomain(this TopicRequest request, Topic domain)
+        public static void From(this Topic domain, TopicRequest request)
         {
             domain.Name = request.Name;
             domain.Description = request.Description;

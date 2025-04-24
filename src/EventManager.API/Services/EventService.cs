@@ -30,7 +30,7 @@ namespace EventManager.API.Services
 
         public async Task DeleteAsync(Event @event)
         {
-            var entity = new EventEntity();
+            var entity = await repository.GetByIdAsync(@event.Id);
             @event.ToEntity(entity);
             await repository.DeleteAsync(entity);
         }
@@ -50,7 +50,7 @@ namespace EventManager.API.Services
                 e => e.Speaker);
             
             var @event = new Event();
-            entity.ToDomain(@event);
+            @event.From(entity);
 
             return @event;
         }
@@ -60,7 +60,7 @@ namespace EventManager.API.Services
             var entity = await repository.GetByIdAsync(@event.Id);
             @event.ToEntity(entity);
             entity = await repository.UpdateAsync(entity, e => e.Speaker, e => e.Topic);
-            entity.ToDomain(@event);
+            @event.From(entity);
             
             return @event;
         }

@@ -10,7 +10,6 @@ namespace EventManager.API.Database.Configurations
         {
             builder.ToTable("Events");
             builder.HasKey(k => k.Id);
-            builder.Property(p => p.IsSpeakerActive).HasDefaultValue(true);
             builder.Property(p => p.DateTime).IsRequired();
 
             builder.Property(e => e.SpeakerId)

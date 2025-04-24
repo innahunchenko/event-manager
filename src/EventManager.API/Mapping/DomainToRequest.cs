@@ -5,20 +5,20 @@ namespace EventManager.API.Mapping
 {
     public static class DomainToRequest
     {
-        public static void ToRequest(this Event domain, EventRequest request)
+        public static void From(this EventRequest request, Event domain)
         {
             request.DateTime = domain.DateTime;
             request.SpeakerId = domain.SpeakerId.ToString();
             request.TopicId = domain.TopicId.ToString();
         }
 
-        public static void ToRequest(this Topic domain, TopicRequest request)
+        public static void From(this TopicRequest request, Topic domain)
         {
             request.Description = domain.Description;
             request.Name = domain.Name;
         }
 
-        public static void ToRequest(this User domain, UserRequest request)
+        public static void From(this UserRequest request, User domain)
         {
             request.FirstName = domain.FirstName;
             request.LastName = domain.LastName;

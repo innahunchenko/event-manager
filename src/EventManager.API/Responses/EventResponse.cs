@@ -7,7 +7,6 @@
         public string SpeakerLastName { get; set; } = string.Empty;
         public string SpeakerPosition { get; set; } = string.Empty;
         public string SpeakerCompany { get; set; } = string.Empty;
-        public bool IsSpeakerActive { get; set; }
         public string TopicName { get; set; } = string.Empty;
         public DateTime DateTime { get; set; }
     }

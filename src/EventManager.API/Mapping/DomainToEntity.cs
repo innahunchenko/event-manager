@@ -5,7 +5,7 @@ namespace EventManager.API.Mapping
 {
     public static class DomainToDbEntityExtensions
     {
-        public static void ToEntity(this User domain, UserEntity entity)
+        public static void From(this UserEntity entity, User domain)
         {
             entity.Id = domain.Id;
             entity.Company = domain.Company;
@@ -30,7 +30,7 @@ namespace EventManager.API.Mapping
             }
         }
 
-        public static void ToEntity(this Topic domain, TopicEntity entity)
+        public static void From(this TopicEntity entity, Topic domain)
         {
             entity.Id = domain.Id;
             entity.Description = domain.Description;
@@ -61,7 +61,7 @@ namespace EventManager.API.Mapping
             return domains.Select(ev =>
             {
                 var entity = new TopicEntity();
-                ev.ToEntity(entity);
+                entity.From(ev);
                 return entity;
             }).ToList();
         }
@@ -71,7 +71,7 @@ namespace EventManager.API.Mapping
             return domains.Select(ev =>
             {
                 var entity = new UserEntity();
-                ev.ToEntity(entity);
+                entity.From(ev);
                 return entity;
             }).ToList();
         }

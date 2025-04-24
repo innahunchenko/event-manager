@@ -18,7 +18,7 @@ namespace EventManager.API.Services
         {
             var userEntity = await repository.GetByIdAsync(Guid.Parse(id), u => u.UserEvents);
             var user = new User();
-            userEntity.ToDomain(user);
+            user.From(userEntity);
             return user;
         }
 
@@ -40,7 +40,7 @@ namespace EventManager.API.Services
         public async Task<Guid> CreateAsync(User user)
         {
             var entity = new UserEntity();
-            user.ToEntity(entity);
+            entity.From(user);
             var id = await repository.CreateAsync(entity);
             return id;
         }
@@ -54,16 +54,16 @@ namespace EventManager.API.Services
         public async Task<User> UpdateAsync(User user)
         {
             var entity = await repository.GetByIdAsync(user.Id);
-            user.ToEntity(entity);
+            entity.From(user);
             entity = await repository.UpdateAsync(entity);
-            entity.ToDomain(user);
+            user.From(entity);
             return user;
         }
 
         public async Task DeleteAsync(User user)
         {
             var entity = await repository.GetByIdAsync(user.Id);
-            user.ToEntity(entity);
+            entity.From(user);
             await repository.DeleteAsync(entity);
         }
 
@@ -74,7 +74,7 @@ namespace EventManager.API.Services
             eventIds.ToList().ForEach(eventId =>  evIds.Add(Guid.Parse(eventId)));
             var user = await GetByIdAsync(userId);
             user.AddEventIds(evIds);
-            user.ToEntity(entity);
+            entity.From(user);
             user.MapUserEvents(entity);
             await repository.AssignEventsToUserAsync(entity);
         }

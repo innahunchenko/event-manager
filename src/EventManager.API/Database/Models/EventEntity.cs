@@ -7,7 +7,6 @@
         public TopicEntity? Topic { get; set; }
         public Guid? TopicId { get; set; }
         public DateTime DateTime { get; set; } = default!;
-        public bool IsSpeakerActive { get; set; }
         public ICollection<UserEventEntity>? UserEvents { get; set; } = new List<UserEventEntity>();
     }
 }

@@ -9,6 +9,6 @@ namespace EventManager.API.Services
         Task<Guid> CreateAsync(TEntity entity);
         Task CreateRangeAsync(IEnumerable<TEntity> entity);
         Task<TEntity> UpdateAsync(TEntity entity);
-        Task DeleteAsync(TEntity entity);
+        Task DeleteAsync(string id);
     }
 }

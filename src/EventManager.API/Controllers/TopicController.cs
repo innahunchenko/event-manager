@@ -22,7 +22,7 @@ namespace EventManager.API.Controllers
         public async Task<ActionResult<string>> Create([FromBody] TopicRequest request)
         {
             var domain = new Topic();
-            request.ToDomain(domain);
+            domain.From(request);
             var id = await service.CreateAsync(domain);
             return Ok(id);
         }
@@ -43,20 +43,15 @@ namespace EventManager.API.Controllers
                 return NotFound();
 
             var response = new TopicResponse();
-            domain.ToResponse(response);
-
+            response.From(domain);
             return Ok(response);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var domain = await service.GetByIdAsync(id);
-            if (domain is null)
-                return NotFound();
-
-            await service.DeleteAsync(domain);
-            return NoContent();
+            var success = await service.DeleteAsync(id);
+            return success ? NoContent() : NotFound();
         }
 
         [HttpPatch("{id}")]
@@ -66,16 +61,12 @@ namespace EventManager.API.Controllers
             if (domain == null) return NotFound();
 
             var request = new TopicRequest();
-            domain.ToRequest(request);
-
+            request.From(domain);
             patchDoc.ApplyTo(request);
-
-            request.ToDomain(domain);
-
+            domain.From(request);
             var updated = await service.UpdateAsync(domain);
             var response = new TopicResponse();
-            updated.ToResponse(response);
-
+            response.From(updated);
             return Ok(response);
         }
     }

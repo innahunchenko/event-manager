@@ -17,7 +17,7 @@ namespace EventManager.API.Services
         public async Task<Guid> CreateAsync(Topic topic)
         {
             var entity = new TopicEntity();
-            topic.ToEntity(entity);
+            entity.From(topic);
             var id = await repository.CreateAsync(entity);
             return id;
         }
@@ -28,11 +28,14 @@ namespace EventManager.API.Services
             await repository.CreateRangeAsync(entities);
         }
 
-        public async Task DeleteAsync(Topic topic)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var entity = new TopicEntity();
-            topic.ToEntity(entity);
+            var entity = await repository.GetByIdAsync(Guid.Parse(id));
+            if (entity is null)
+                return false;
+
             await repository.DeleteAsync(entity);
+            return true;
         }
 
         public async Task<IEnumerable<Topic>> GetAllAsync()
@@ -46,16 +49,16 @@ namespace EventManager.API.Services
         {
             var entity = await repository.GetByIdAsync(Guid.Parse(id));
             var topic = new Topic();
-            entity.ToDomain(topic);
+            entity.From(topic);
             return topic;
         }
 
         public async Task<Topic> UpdateAsync(Topic topic)
         {
             var entity = await repository.GetByIdAsync(topic.Id);
-            topic.ToEntity(entity);
+            entity.From(topic);
             entity = await repository.UpdateAsync(entity);
-            entity.ToDomain(topic);
+            topic.From(entity);
             return topic;
         }
     }

@@ -5,7 +5,7 @@ namespace EventManager.API.Mapping
 {
     public static class DomainToResponse
     {
-        public static void ToResponse(this User domain, UserResponse response)
+        public static void From(this UserResponse response, User domain)
         {
             response.Id = domain.Id.ToString();
             response.FirstName = domain.FirstName;
@@ -16,7 +16,7 @@ namespace EventManager.API.Mapping
             response.Role = domain.Role.ToString();
         }
 
-        public static void ToResponse(this Topic domain, TopicResponse response)
+        public static void From(this TopicResponse response, Topic domain)
         {
             response.Id = domain.Id.ToString();
             response.IsActive = domain.IsActive;
@@ -24,14 +24,13 @@ namespace EventManager.API.Mapping
             response.Description = domain.Description;
         }
 
-        public static void ToResponse(this Event domain, EventResponse response)
+        public static void From(this EventResponse response, Event domain)
         {
             response.Id = domain.Id.ToString();
             response.SpeakerFirstName = domain.Speaker.FirstName;
             response.SpeakerLastName = domain.Speaker.LastName;
             response.SpeakerPosition = domain.Speaker.Position;
             response.SpeakerCompany = domain.Speaker.Company;
-            response.IsSpeakerActive = domain.IsSpeakerActive;
             response.TopicName = domain.Topic.Name;
             response.DateTime = domain.DateTime;
         }
@@ -49,30 +48,30 @@ namespace EventManager.API.Mapping
 
         public static List<TopicResponse> ToResponses(this IEnumerable<Topic> topics)
         {
-            return topics.Select(t =>
+            return topics.Select(domain =>
             {
                 var response = new TopicResponse();
-                t.ToResponse(response);
+                response.From(domain);
                 return response;
             }).ToList();
         }
 
         public static List<UserResponse> ToResponses(this IEnumerable<User> users)
         {
-            return users.Select(d =>
+            return users.Select(domain =>
             {
                 var response = new UserResponse();
-                d.ToResponse(response);
+                response.From(domain);
                 return response;
             }).ToList();
         }
 
         public static List<EventResponse> ToResponses(this IEnumerable<Event> events)
         {
-            return events.Select(d =>
+            return events.Select(domain =>
             {
                 var response = new EventResponse();
-                d.ToResponse(response);
+                response.From(domain);
                 return response;
             }).ToList();
         }

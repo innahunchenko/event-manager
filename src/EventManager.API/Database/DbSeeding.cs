@@ -58,8 +58,7 @@ namespace EventManager.API.Database
                 Id = Guid.NewGuid(),
                 SpeakerId = speaker.Id,
                 TopicId = topic.Id,
-                DateTime = DateTime.UtcNow.AddDays(3),
-                IsSpeakerActive = true
+                DateTime = DateTime.UtcNow.AddDays(3)
             };
 
             speaker.UserEvents.Add(new UserEventEntity { UserId = Guid.Empty, EventId = @event.Id });
@@ -108,8 +107,7 @@ namespace EventManager.API.Database
                 Id = Guid.NewGuid(),
                 SpeakerId = speaker.Id,
                 TopicId = topic.Id,
-                DateTime = DateTime.UtcNow.AddDays(7),
-                IsSpeakerActive = true
+                DateTime = DateTime.UtcNow.AddDays(7)
             };
 
             speaker.UserEvents.Add(new UserEventEntity { UserId = Guid.Empty, EventId = @event2.Id });
