@@ -1,3 +1,4 @@
+using EventManager.API.Common;
 using EventManager.API.Database;
 using EventManager.API.Repositories;
 using EventManager.API.Services;
@@ -17,7 +18,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddControllers()
-    .AddNewtonsoftJson(); 
+    .AddNewtonsoftJson();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
@@ -27,7 +31,7 @@ await app.InitialiseDatabaseAsync();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.UseExceptionHandler();
 app.MapControllers(); 
 
 app.Run();

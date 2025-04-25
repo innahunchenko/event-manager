@@ -32,5 +32,8 @@
         {
             this.value = value;
         }
+
+        public static implicit operator Result<TValue>(TValue? value) =>
+            value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
     }
 }

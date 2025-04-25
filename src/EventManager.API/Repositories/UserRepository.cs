@@ -9,30 +9,23 @@ namespace EventManager.API.Repositories
         public UserRepository(AppDbContext context) : base(context)
         { }
 
-        public async Task AssignEventsToUserAsync(UserEntity user)
+        public async Task<bool> AssignEventsToUserAsync(UserEntity user)
         {
-            try
+            var existingEvents = await context.UserEvents
+                .Where(x => x.UserId == user.Id)
+                .ToListAsync();
+
+            context.UserEvents.RemoveRange(existingEvents);
+
+            foreach (var ue in user.UserEvents)
             {
-                var existingEvents = await context.UserEvents
-                    .Where(x => x.UserId == user.Id)
-                    .ToListAsync();
-
-                context.UserEvents.RemoveRange(existingEvents);
-
-                foreach (var ue in user.UserEvents)
-                {
-                    ue.Id = Guid.NewGuid();
-                    context.UserEvents.Add(ue);
-                }
-
-                context.Users.Update(user);
-
-                await context.SaveChangesAsync();
+                ue.Id = Guid.NewGuid();
+                context.UserEvents.Add(ue);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+
+            context.Users.Update(user);
+            var changes = await context.SaveChangesAsync();
+            return changes > 0;
         }
 
         public async Task<List<EventEntity>> GetUserEventsAsync(List<Guid> eventIds)

@@ -25,14 +25,14 @@ namespace EventManager.API.Services
 
             var user = new User();
             user.From(entity);
-            return Result.Success(user);
+            return user;
         }
 
         public async Task<Result<List<User>>> GetAllAsync()
         {
             var entities = await repository.GetAllAsync();
             var users = entities.ToDomains();
-            return Result.Success(users);
+            return users;
         }
 
         public async Task<Result<List<Event>>> GetUserEventsAsync(string userId)
@@ -44,8 +44,8 @@ namespace EventManager.API.Services
             var user = new User();
             user.From(userEntity);
             var entities = await repository.GetUserEventsAsync(user.EventIds.ToList());
-            var events = entities.Value.ToDomains();
-            return Result.Success(events);
+            var events = entities.ToDomains();
+            return events;
         }
 
         public async Task<Result<Guid>> CreateAsync(User user)
@@ -53,7 +53,7 @@ namespace EventManager.API.Services
             var entity = new UserEntity();
             entity.From(user);
             var id = await repository.CreateAsync(entity);
-            return Result.Success(id);
+            return id;
         }
 
         public async Task<Result<User>> UpdateAsync(string id, JsonPatchDocument<UserRequest> patchDoc)
@@ -69,7 +69,7 @@ namespace EventManager.API.Services
             entity = await repository.UpdateAsync(entity);
             var user = new User();
             user.From(entity);
-            return Result.Success(user);
+            return user;
         }
 
         public async Task<Result> DeleteAsync(string id)
@@ -91,7 +91,9 @@ namespace EventManager.API.Services
             var evIds = new List<Guid>();
             eventIds.ToList().ForEach(eventId =>  evIds.Add(Guid.Parse(eventId)));
             entity.AddEvents(evIds);
-            return await repository.AssignEventsToUserAsync(entity);
+            var result = await repository.AssignEventsToUserAsync(entity);
+            return result ? Result.Success()
+                : Result.Failure(DomainErrors.EventsAssignmentError);
         }
     }
 }

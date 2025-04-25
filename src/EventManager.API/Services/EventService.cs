@@ -34,7 +34,7 @@ namespace EventManager.API.Services
 
         public async Task<Result<List<Event>>> GetAllAsync()
         {
-            var entities = await repository.GetAllAsync();
+            var entities = await repository.GetAllAsync(e => e.Topic, e => e.Speaker);
             var events = entities.ToDomains();
             return Result.Success(events);
         }
