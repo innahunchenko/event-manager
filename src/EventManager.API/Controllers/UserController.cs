@@ -1,4 +1,5 @@
-﻿using EventManager.API.Domain;
+﻿using EventManager.API.Common;
+using EventManager.API.Domain;
 using EventManager.API.Mapping;
 using EventManager.API.Requests;
 using EventManager.API.Responses;
@@ -19,82 +20,77 @@ namespace EventManager.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<string>> Create([FromBody] UserRequest request)
+        public async Task<IActionResult> Create([FromBody] UserRequest request)
         {
             var domain = new User();
             domain.From(request);
-            var id = await service.CreateAsync(domain);
-            return Ok(id);
+            var result = await service.CreateAsync(domain);
+            return result.ToActionResult(id => Ok(id));
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var domains = await service.GetAllAsync();
-            var responses = domains.ToResponses();
-            return Ok(responses);
+            var result = await service.GetAllAsync();
+            return result.ToActionResult(
+                users =>
+                {
+                    var responses = users.ToResponses();
+                    return Ok(responses);
+                });
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserResponse>> GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
-            var domain = await service.GetByIdAsync(id);
-            if (domain is null)
-                return NotFound();
-
-            var response = new UserResponse();
-            response.From(domain);
-            return Ok(response);
+            var result = await service.GetByIdAsync(id);
+            return result.ToActionResult(
+                user =>
+                {
+                    var response = new UserResponse();
+                    response.From(user);
+                    return Ok(response);
+                });
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var domain = await service.GetByIdAsync(id);
-            if (domain is null)
-                return NotFound();
-
-            await service.DeleteAsync(domain);
-            return NoContent();
+            var result = await service.DeleteAsync(id);
+            return result.ToActionResult(
+                () => Ok(new { Message = $"User {id} deleted successfully" }));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<UserRequest> patchDoc)
         {
-            var domain = await service.GetByIdAsync(id);
-            if (domain == null) return NotFound();
-
-            var request = new UserRequest();
-            request.From(domain);
-            patchDoc.ApplyTo(request);
-            domain.From(request);
-            var updated = await service.UpdateAsync(domain);
-            var response = new UserResponse();
-            response.From(updated);
-            return Ok(response);
+            var result = await service.UpdateAsync(id, patchDoc);
+            return result.ToActionResult(updatedUser =>
+            {
+                var response = new UserResponse();
+                response.From(updatedUser);
+                return Ok(response);
+            });
         }
 
         [HttpPost("assign-events/{id}")]
         public async Task<IActionResult> AssignEvents(string id, [FromBody] AssignEventsRequest request)
         {
-            var existing = await service.GetByIdAsync(id);
-            if (existing is null)
-                return NotFound();
-
-            await service.AssignEventsToUserAsync(id, request.EventIds);
-            return NoContent();
+            var result = await service.AssignEventsToUserAsync(id, request.EventIds);
+            return result.ToActionResult(() => Ok(new { Message = $"Events successfully assigned to user {id}" }));
         }
 
         [HttpGet("events/{id}")]
         public async Task<IActionResult> GetUserEvents(string id)
         {
-            var existing = await service.GetByIdAsync(id);
-            if (existing is null)
-                return NotFound();
+            var result = await service.GetUserEventsAsync(id);
 
-            var events = await service.GetUserEventsAsync(id);
-            var responses = events.ToResponses();
-            return Ok(responses);
+            return result.ToActionResult(
+                events =>
+                {
+                    var responses = events.ToResponses();
+                    return Ok(responses);
+                });
         }
     }
 }

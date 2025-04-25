@@ -16,15 +16,15 @@ namespace EventManager.API.Mapping
             entity.YearsOfExperience = domain.YearsOfExperience;
         }
 
-        public static void MapUserEvents(this User domain, UserEntity entity)
+        public static void AddEvents(this UserEntity entity, List<Guid> eventIds)
         {
             entity.UserEvents.Clear();
 
-            foreach (var eventId in domain.EventIds ?? Enumerable.Empty<Guid>())
+            foreach (var eventId in eventIds ?? Enumerable.Empty<Guid>())
             {
                 entity.UserEvents.Add(new UserEventEntity
                 {
-                    UserId = domain.Id,
+                    UserId = entity.Id,
                     EventId = eventId
                 });
             }
@@ -38,7 +38,7 @@ namespace EventManager.API.Mapping
             entity.Name = domain.Name;
         }
 
-        public static void ToEntity(this Event domain, EventEntity entity)
+        public static void From(this EventEntity entity, Event domain)
         {
             entity.Id = domain.Id;
             entity.SpeakerId = domain.SpeakerId.Value;
@@ -51,7 +51,7 @@ namespace EventManager.API.Mapping
             return domains.Select(ev =>
             {
                 var entity = new EventEntity();
-                ev.ToEntity(entity);
+                ev.From(entity);
                 return entity;
             }).ToList();
         }

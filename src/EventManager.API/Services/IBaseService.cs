@@ -1,14 +1,13 @@
-﻿using EventManager.API.Domain;
+﻿using EventManager.API.Common;
+using EventManager.API.Domain;
 
 namespace EventManager.API.Services
 {
     public interface IBaseService<TEntity> where TEntity : IEntity
     {
-        Task<TEntity> GetByIdAsync(string id);
-        Task<IEnumerable<TEntity>> GetAllAsync();
-        Task<Guid> CreateAsync(TEntity entity);
-        Task CreateRangeAsync(IEnumerable<TEntity> entity);
-        Task<TEntity> UpdateAsync(TEntity entity);
-        Task DeleteAsync(string id);
+        Task<Result<TEntity>> GetByIdAsync(string id);
+        Task<Result<List<TEntity>>> GetAllAsync();
+        Task<Result<Guid>> CreateAsync(TEntity entity);
+        Task<Result> DeleteAsync(string id);
     }
 }

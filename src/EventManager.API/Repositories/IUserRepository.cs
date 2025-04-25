@@ -1,10 +1,11 @@
-﻿using EventManager.API.Database.Models;
+﻿using EventManager.API.Common;
+using EventManager.API.Database.Models;
 
 namespace EventManager.API.Repositories
 {
     public interface IUserRepository : IBaseRepository<UserEntity>
     {
-        Task AssignEventsToUserAsync(UserEntity user);
-        Task<List<EventEntity>> GetUserEventsAsync(List<Guid> eventIds);
+        Task<Result> AssignEventsToUserAsync(UserEntity user);
+        Task<Result<List<EventEntity>>> GetUserEventsAsync(List<Guid> eventIds);
     }
 }

@@ -5,69 +5,73 @@ using EventManager.API.Responses;
 using EventManager.API.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using EventManager.API.Common;
 
 namespace EventManager.API.Controllers
 {
     [Route("api/topics")]
     public class TopicController : ControllerBase
     {
-        private readonly TopicService service;
+        private readonly ITopicService service;
 
-        public TopicController(TopicService service)
+        public TopicController(ITopicService service)
         {
             this.service = service;
         }
 
+
         [HttpPost("create")]
-        public async Task<ActionResult<string>> Create([FromBody] TopicRequest request)
+        public async Task<IActionResult> Create([FromBody] TopicRequest request)
         {
             var domain = new Topic();
             domain.From(request);
-            var id = await service.CreateAsync(domain);
-            return Ok(id);
+            var result = await service.CreateAsync(domain);
+            return result.ToActionResult(id => Ok(id));
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TopicResponse>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var domains = await service.GetAllAsync();
-            var responses = domains.ToResponses();
-            return Ok(responses);
+            var result = await service.GetAllAsync();
+            return result.ToActionResult(
+                topis =>
+                {
+                    var responses = topis.ToResponses();
+                    return Ok(responses);
+                });
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TopicResponse>> GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
-            var domain = await service.GetByIdAsync(id);
-            if (domain is null)
-                return NotFound();
-
-            var response = new TopicResponse();
-            response.From(domain);
-            return Ok(response);
+            var result = await service.GetByIdAsync(id);
+            return result.ToActionResult(
+                topic =>
+                {
+                    var response = new TopicResponse();
+                    response.From(topic);
+                    return Ok(response);
+                });
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var success = await service.DeleteAsync(id);
-            return success ? NoContent() : NotFound();
+            var result = await service.DeleteAsync(id);
+            return result.ToActionResult(
+                () => Ok(new { Message = $"Topic {id} deleted successfully" }));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<TopicRequest> patchDoc)
         {
-            var domain = await service.GetByIdAsync(id);
-            if (domain == null) return NotFound();
-
-            var request = new TopicRequest();
-            request.From(domain);
-            patchDoc.ApplyTo(request);
-            domain.From(request);
-            var updated = await service.UpdateAsync(domain);
-            var response = new TopicResponse();
-            response.From(updated);
-            return Ok(response);
+            var result = await service.UpdateAsync(id, patchDoc);
+            return result.ToActionResult(updatedTopic =>
+            {
+                var response = new TopicResponse();
+                response.From(updatedTopic);
+                return Ok(response);
+            });
         }
     }
 }

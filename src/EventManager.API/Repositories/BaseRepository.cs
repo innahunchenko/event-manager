@@ -49,20 +49,6 @@ namespace EventManager.API.Repositories
             return entity.Id;
         }
 
-        public async Task CreateRangeAsync(IList<TEntity> entities)
-        {
-            foreach (var entity in entities)
-            {
-                if (entity.Id == Guid.Empty)
-                {
-                    entity.Id = Guid.NewGuid();
-                }
-            }
-
-            await context.Set<TEntity>().AddRangeAsync(entities);
-            await context.SaveChangesAsync();
-        }
-
         public async Task<TEntity> UpdateAsync(TEntity entity, params Expression<Func<TEntity, object>>[] includes)
         {
             DbSet.Update(entity);

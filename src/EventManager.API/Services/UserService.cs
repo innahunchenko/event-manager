@@ -1,7 +1,10 @@
-﻿using EventManager.API.Database.Models;
+﻿using EventManager.API.Common;
+using EventManager.API.Database.Models;
 using EventManager.API.Domain;
 using EventManager.API.Mapping;
 using EventManager.API.Repositories;
+using EventManager.API.Requests;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace EventManager.API.Services
 {
@@ -14,69 +17,81 @@ namespace EventManager.API.Services
             this.repository = repository;
         }
 
-        public async Task<User> GetByIdAsync(string id)
+        public async Task<Result<User>> GetByIdAsync(string id)
         {
-            var userEntity = await repository.GetByIdAsync(Guid.Parse(id), u => u.UserEvents);
+            var entity = await repository.GetByIdAsync(Guid.Parse(id), u => u.UserEvents);
+            if (entity == null)
+                return Result.Failure<User>(DomainErrors.NotFound<User>(id));
+
             var user = new User();
-            user.From(userEntity);
-            return user;
+            user.From(entity);
+            return Result.Success(user);
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<Result<List<User>>> GetAllAsync()
         {
             var entities = await repository.GetAllAsync();
             var users = entities.ToDomains();
-            return users;
+            return Result.Success(users);
         }
 
-        public async Task<List<Event>> GetUserEventsAsync(string userId)
+        public async Task<Result<List<Event>>> GetUserEventsAsync(string userId)
         {
-            var user = await GetByIdAsync(userId);
-             var entities = await repository.GetUserEventsAsync(user.EventIds.ToList());
-            var events = entities.ToDomains();
-            return events;
+            var userEntity = await repository.GetByIdAsync(Guid.Parse(userId));
+            if (userEntity == null)
+                return Result.Failure<List<Event>>(DomainErrors.NotFound<User>(userId));
+
+            var user = new User();
+            user.From(userEntity);
+            var entities = await repository.GetUserEventsAsync(user.EventIds.ToList());
+            var events = entities.Value.ToDomains();
+            return Result.Success(events);
         }
 
-        public async Task<Guid> CreateAsync(User user)
+        public async Task<Result<Guid>> CreateAsync(User user)
         {
             var entity = new UserEntity();
             entity.From(user);
             var id = await repository.CreateAsync(entity);
-            return id;
+            return Result.Success(id);
         }
 
-        public async Task CreateRangeAsync(IEnumerable<User> users)
+        public async Task<Result<User>> UpdateAsync(string id, JsonPatchDocument<UserRequest> patchDoc)
         {
-            var entities = users.ToEntities();
-            await repository.CreateRangeAsync(entities);
-        }
+            var entity = await repository.GetByIdAsync(Guid.Parse(id));
+            if (entity == null)
+                return Result.Failure<User>(DomainErrors.NotFound<User>(id));
 
-        public async Task<User> UpdateAsync(User user)
-        {
-            var entity = await repository.GetByIdAsync(user.Id);
-            entity.From(user);
+            var request = new UserRequest();
+            request.From(entity);
+            patchDoc.ApplyTo(request);
+            entity.From(request);
             entity = await repository.UpdateAsync(entity);
+            var user = new User();
             user.From(entity);
-            return user;
+            return Result.Success(user);
         }
 
-        public async Task DeleteAsync(User user)
+        public async Task<Result> DeleteAsync(string id)
         {
-            var entity = await repository.GetByIdAsync(user.Id);
-            entity.From(user);
+            var entity = await repository.GetByIdAsync(Guid.Parse(id));
+            if (entity == null)
+                return Result.Failure(DomainErrors.NotFound<User>(id));
+
             await repository.DeleteAsync(entity);
+            return Result.Success();
         }
 
-        public async Task AssignEventsToUserAsync(string userId, IEnumerable<string> eventIds)
+        public async Task<Result> AssignEventsToUserAsync(string userId, IEnumerable<string> eventIds)
         {
             var entity = await repository.GetByIdAsync(Guid.Parse(userId));
+            if (entity == null)
+                return Result.Failure(DomainErrors.NotFound<User>(userId));
+
             var evIds = new List<Guid>();
             eventIds.ToList().ForEach(eventId =>  evIds.Add(Guid.Parse(eventId)));
-            var user = await GetByIdAsync(userId);
-            user.AddEventIds(evIds);
-            entity.From(user);
-            user.MapUserEvents(entity);
-            await repository.AssignEventsToUserAsync(entity);
+            entity.AddEvents(evIds);
+            return await repository.AssignEventsToUserAsync(entity);
         }
     }
 }
