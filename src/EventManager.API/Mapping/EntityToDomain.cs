@@ -38,10 +38,16 @@ namespace EventManager.API.Mapping
             domain.SpeakerId = entity.SpeakerId;
 
             if (entity.Speaker != null)
+            {
+                domain.Speaker ??= new User();
                 domain.Speaker.From(entity.Speaker);
+            }
 
             if (entity.Topic != null)
+            {
+                domain.Topic ??= new Topic();
                 domain.Topic.From(entity.Topic);
+            }
         }
 
         public static List<User> ToDomains(this IEnumerable<UserEntity> entities)

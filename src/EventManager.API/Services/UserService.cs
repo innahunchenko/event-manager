@@ -1,6 +1,7 @@
 ﻿using EventManager.API.Common;
 using EventManager.API.Database.Models;
 using EventManager.API.Domain;
+using EventManager.API.Errors;
 using EventManager.API.Mapping;
 using EventManager.API.Repositories;
 using EventManager.API.Requests;

@@ -6,6 +6,7 @@
         Failure = 1,
         NotFound = 2,
         Validation = 3,
+        Unauthorized = 4
     }
 
     public class Error
@@ -25,6 +26,9 @@
         
         public static Error NotFound(string code, string description) =>
             new(code, description, ErrorType.NotFound);
+
+        public static Error Unauthorized(string code, string description) =>
+            new(code, description, ErrorType.Unauthorized);
 
         public static Error Failure(string code, string description) =>
             new(code, description, ErrorType.Failure);

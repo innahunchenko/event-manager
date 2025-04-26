@@ -1,6 +1,6 @@
 ﻿using EventManager.API.Common;
 
-namespace EventManager.API.Domain
+namespace EventManager.API.Errors
 {
     public static class DomainErrors
     {

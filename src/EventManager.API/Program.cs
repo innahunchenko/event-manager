@@ -3,6 +3,7 @@ using EventManager.API.Database;
 using EventManager.API.Repositories;
 using EventManager.API.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,31 @@ builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "X-Api-Key",
+        Type = SecuritySchemeType.ApiKey,
+        Description = "API Key for accessing the API"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "ApiKey"
+                }
+            },
+            new string[] { }
+        }
+    });
+});
 
 builder.Services
     .AddControllers()
@@ -28,10 +53,13 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 
 var app = builder.Build();
 await app.InitialiseDatabaseAsync();
+app.UseExceptionHandler();
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseExceptionHandler();
-app.MapControllers(); 
+
+app.MapControllers();
 
 app.Run();

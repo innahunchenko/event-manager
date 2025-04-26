@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using EventManager.API.Errors;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManager.API.Common
@@ -12,18 +13,22 @@ namespace EventManager.API.Common
         {
             logger.LogError(exception, "Unhandled exception occurred");
 
-            var problemDetails = new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-                Title = "Server failure"
-            };
+            var problemDetails = (exception as AppException)?.Error?.ToProblemDetails()
+                ?? CreateDefaultProblemDetails();
 
-            httpContext.Response.StatusCode = problemDetails.Status.Value;
-
+            httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
             await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
             return true;
         }
+
+        private static ProblemDetails CreateDefaultProblemDetails() =>
+            new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
+                Title = "Server Failure",
+                Detail = "An unexpected error occurred."
+            };
     }
 }
