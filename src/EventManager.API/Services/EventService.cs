@@ -30,14 +30,14 @@ namespace EventManager.API.Services
 
             var @event = new Event();
             @event.From(entity);
-            return Result.Success(@event);
+            return @event;
         }
 
         public async Task<Result<List<Event>>> GetAllAsync()
         {
             var entities = await repository.GetAllAsync(e => e.Topic, e => e.Speaker);
             var events = entities.ToDomains();
-            return Result.Success(events);
+            return events;
         }
 
         public async Task<Result<Guid>> CreateAsync(Event @event)
@@ -45,7 +45,7 @@ namespace EventManager.API.Services
             var entity = new EventEntity();
             entity.From(@event);
             var id = await repository.CreateAsync(entity);
-            return Result.Success(id);
+            return id;
         }
 
         public async Task<Result<Event>> UpdateAsync(string id, JsonPatchDocument<EventRequest> patchDoc)
@@ -61,7 +61,7 @@ namespace EventManager.API.Services
             entity = await repository.UpdateAsync(entity);
             var @event = new Event();
             @event.From(entity);
-            return Result.Success(@event);
+            return @event;
         }
 
         public async Task<Result> DeleteAsync(string id)
