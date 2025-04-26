@@ -38,7 +38,7 @@ namespace EventManager.API.Services
 
         public async Task<Result<List<Event>>> GetUserEventsAsync(string userId)
         {
-            var userEntity = await repository.GetByIdAsync(Guid.Parse(userId));
+            var userEntity = await repository.GetByIdAsync(Guid.Parse(userId), e => e.UserEvents);
             if (userEntity == null)
                 return Result.Failure<List<Event>>(DomainErrors.NotFound<User>(userId));
 

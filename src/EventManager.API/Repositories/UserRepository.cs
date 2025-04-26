@@ -11,11 +11,9 @@ namespace EventManager.API.Repositories
 
         public async Task<bool> AssignEventsToUserAsync(UserEntity user)
         {
-            var existingEvents = await context.UserEvents
-                .Where(x => x.UserId == user.Id)
-                .ToListAsync();
-
-            context.UserEvents.RemoveRange(existingEvents);
+            await context.UserEvents
+                .Where(ue => ue.UserId == user.Id)
+                .ExecuteDeleteAsync();
 
             foreach (var ue in user.UserEvents)
             {
@@ -23,7 +21,6 @@ namespace EventManager.API.Repositories
                 context.UserEvents.Add(ue);
             }
 
-            context.Users.Update(user);
             var changes = await context.SaveChangesAsync();
             return changes > 0;
         }
