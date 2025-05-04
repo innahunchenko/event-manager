@@ -2,19 +2,18 @@
 using EventManager.API.Mapping;
 using EventManager.API.Requests;
 using EventManager.API.Responses;
-using EventManager.API.Services;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using EventManager.API.Common;
+using EventManager.API.Services;
 
 namespace EventManager.API.Controllers
 {
     [Route("api/topics")]
     public class TopicController : ControllerBase
     {
-        private readonly ITopicService service;
+        private readonly TopicService service;
 
-        public TopicController(ITopicService service)
+        public TopicController(TopicService service)
         {
             this.service = service;
         }

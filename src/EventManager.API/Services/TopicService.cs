@@ -7,7 +7,7 @@ using EventManager.API.Repositories;
 
 namespace EventManager.API.Services
 {
-    public class TopicService : ITopicService
+    public class TopicService : IBaseService<Topic>
     {
         private readonly IBaseRepository<TopicEntity> repository;
 

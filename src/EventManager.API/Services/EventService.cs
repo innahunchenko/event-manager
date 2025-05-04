@@ -7,7 +7,7 @@ using EventManager.API.Repositories;
 
 namespace EventManager.API.Services
 {
-    public class EventService : IEventService
+    public class EventService : IBaseService<Event>
     {
         private readonly IBaseRepository<EventEntity> repository;
 

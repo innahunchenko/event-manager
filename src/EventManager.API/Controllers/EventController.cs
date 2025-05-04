@@ -4,7 +4,6 @@ using EventManager.API.Mapping;
 using EventManager.API.Requests;
 using EventManager.API.Responses;
 using EventManager.API.Services;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManager.API.Controllers
@@ -12,9 +11,9 @@ namespace EventManager.API.Controllers
     [Route("api/events")]
     public class EventController : ControllerBase
     {
-        private readonly IEventService service;
+        private readonly EventService service;
 
-        public EventController(IEventService service)
+        public EventController(EventService service)
         {
             this.service = service;
         }
