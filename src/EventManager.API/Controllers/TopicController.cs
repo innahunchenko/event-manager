@@ -63,9 +63,12 @@ namespace EventManager.API.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<TopicRequest> patchDoc)
+        public async Task<IActionResult> Patch(string id, [FromBody] TopicRequest request)
         {
-            var result = await service.UpdateAsync(id, patchDoc);
+            var domain = new Topic();
+            domain.From(request);
+
+            var result = await service.UpdateAsync(id, domain);
             return result.ToActionResult(updatedTopic =>
             {
                 var response = new TopicResponse();

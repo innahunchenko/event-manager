@@ -4,8 +4,6 @@ using EventManager.API.Domain;
 using EventManager.API.Errors;
 using EventManager.API.Mapping;
 using EventManager.API.Repositories;
-using EventManager.API.Requests;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace EventManager.API.Services
 {
@@ -57,18 +55,15 @@ namespace EventManager.API.Services
             return id;
         }
 
-        public async Task<Result<User>> UpdateAsync(string id, JsonPatchDocument<UserRequest> patchDoc)
+        public async Task<Result<User>> UpdateAsync(string id, User user)
         {
             var entity = await repository.GetByIdAsync(Guid.Parse(id));
             if (entity == null)
                 return Result.Failure<User>(DomainErrors.NotFound<User>(id));
 
-            var request = new UserRequest();
-            request.From(entity);
-            patchDoc.ApplyTo(request);
-            entity.From(request);
-            entity = await repository.UpdateAsync(entity);
-            var user = new User();
+            user.Id = Guid.Parse(id);
+            entity.From(user);
+            entity = await repository.UpdateAsync(entity, e => e.UserEvents);
             user.From(entity);
             return user;
         }

@@ -8,6 +8,7 @@ namespace EventManager.API.Services
         Task<Result<TEntity>> GetByIdAsync(string id);
         Task<Result<List<TEntity>>> GetAllAsync();
         Task<Result<Guid>> CreateAsync(TEntity entity);
+        Task<Result<TEntity>> UpdateAsync(string id, TEntity entity);
         Task<Result> DeleteAsync(string id);
     }
 }

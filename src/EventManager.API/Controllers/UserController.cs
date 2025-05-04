@@ -1,4 +1,5 @@
-﻿using EventManager.API.Common;
+﻿using Azure.Core;
+using EventManager.API.Common;
 using EventManager.API.Domain;
 using EventManager.API.Mapping;
 using EventManager.API.Requests;
@@ -62,9 +63,12 @@ namespace EventManager.API.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<UserRequest> patchDoc)
+        public async Task<IActionResult> Patch(string id, [FromBody] UserRequest request)
         {
-            var result = await service.UpdateAsync(id, patchDoc);
+            var domain = new User();
+            domain.From(request);
+
+            var result = await service.UpdateAsync(id, domain);
             return result.ToActionResult(updatedUser =>
             {
                 var response = new UserResponse();
