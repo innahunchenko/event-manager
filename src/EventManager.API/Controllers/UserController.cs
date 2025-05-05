@@ -1,11 +1,9 @@
-﻿using Azure.Core;
-using EventManager.API.Common;
+﻿using EventManager.API.Common;
 using EventManager.API.Domain;
 using EventManager.API.Mapping;
 using EventManager.API.Requests;
 using EventManager.API.Responses;
 using EventManager.API.Services;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManager.API.Controllers
@@ -62,8 +60,8 @@ namespace EventManager.API.Controllers
                 () => Ok(new { Message = $"User {id} deleted successfully" }));
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(string id, [FromBody] UserRequest request)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] UserRequest request)
         {
             var domain = new User();
             domain.From(request);

@@ -61,8 +61,8 @@ namespace EventManager.API.Controllers
                 () => Ok(new { Message = $"Topic {id} deleted successfully" }));
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(string id, [FromBody] TopicRequest request)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] TopicRequest request)
         {
             var domain = new Topic();
             domain.From(request);
